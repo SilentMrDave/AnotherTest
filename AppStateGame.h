@@ -17,13 +17,13 @@ class AppStateGame : public AppState
     private:
         static AppStateGame Instance;
  
-        Player		Player1;
-        Player		Player2;
-		Player		Box;
-		int PlayerAmount;
-		int CurrentPlayer;
+
+		Entity		Box;
+
 		Player*		Players;
-		bool		isFirstPlayer;
+		int			PlayerAmount;
+		int			CurrentPlayer;
+		//Will become Entity specific variable
 		bool		follow;
 		
  

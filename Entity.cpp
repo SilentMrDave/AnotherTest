@@ -18,6 +18,7 @@ Entity::Entity()
     MoveRight = false;
 	CanJump = false;
 	isCarrying = false;
+	emptyHands = true;
  
     Type =     ENTITY_TYPE_GENERIC;
  
@@ -65,21 +66,6 @@ bool Entity::OnLoad(char* File, int Width, int Height, int MaxFrames)
     return true;
 }
 
-bool Entity::OnLoad(char* File, int Width, int Height)
-{
-    if((Surf_Entity = Surface::OnLoad(File)) == NULL)
-	{
-        return false;
-    }
- 
-    Surface::Transparent(Surf_Entity, 255, 0, 255);
- 
-    this->Width = Width;
-    this->Height = Height;
- 
-    return true;
-}
- 
 void Entity::OnLoop()
 {
     //We're not Moving
@@ -240,9 +226,10 @@ bool Entity::Jump()
 
 bool Entity::Carry(Entity* Entity)
 {
-	int tempFlags = Entity->Flags;
-	bool letGo = false;
-	//if (PosValidEntity(Entity, Entity->X, Entity->Y))
+	if (emptyHands)
+	{
+		Entity->tempFlags = Entity->Flags;
+	}
 	if (abs(Entity->X - this->X) > 40 && !isCarrying)
 	{
 		Entity->Flags = ENTITY_FLAG_MAPONLY;
@@ -258,10 +245,9 @@ bool Entity::Carry(Entity* Entity)
 		{
 			Entity->X = this->X + 20;
 		}
-		letGo = false;
-		//return true;
+		emptyHands = false;
 	}
-	else if (!letGo)
+	if (!emptyHands)
 	{
 		if (this->MoveLeft)
 		{
@@ -272,8 +258,11 @@ bool Entity::Carry(Entity* Entity)
 			Entity->X = this->X + 20;
 		}
 	}
-	Entity->Flags = tempFlags;
-	isCarrying = false;
+	else
+	{
+		Entity->Flags = Entity->tempFlags;
+		isCarrying = false;
+	}
 	return false;
 }
 

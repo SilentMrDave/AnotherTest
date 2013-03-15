@@ -12,42 +12,18 @@ void AppStateGame::OnKeyDown(SDLKey sym, SDLMod mod, Uint16 unicode)
 switch(sym) {
         case SDLK_LEFT:
 		{
-			/*if (isFirstPlayer)
-			{
-				Player1.MoveLeft = true;
-			}
-			else
-			{
-				Player2.MoveLeft = true;
-			}*/
 			(Players + CurrentPlayer)->MoveLeft = true;
             break;
         }
  
         case SDLK_RIGHT:
 		{
-			/*if (isFirstPlayer)
-			{
-				Player1.MoveRight = true;
-			}
-			else
-			{
-				Player2.MoveRight = true;
-			}*/
 			(Players + CurrentPlayer)->MoveRight = true;
             break;
         }
 
 		case SDLK_SPACE:
 		{
-			/*if (isFirstPlayer)
-			{
-				Player1.Jump();
-			}
-			else
-			{
-				Player2.Jump();
-			}*/
 			(Players + CurrentPlayer)->Jump();
 		   break;
 		}
@@ -64,28 +40,12 @@ void AppStateGame::OnKeyUp(SDLKey sym, SDLMod mod, Uint16 unicode)
 	{
         case SDLK_LEFT:
 		{
-			/*if (isFirstPlayer)
-			{
-				Player1.MoveLeft = false;
-			}
-			else
-			{
-				Player2.MoveLeft = false;
-			}*/
 			(Players + CurrentPlayer)->MoveLeft = false;
             break;
         }
  
         case SDLK_RIGHT:
 		{
-			/*if (isFirstPlayer)
-			{
-				Player1.MoveRight = false;
-			}
-			else
-			{
-				Player2.MoveRight = false;
-			}*/
 			(Players + CurrentPlayer)->MoveRight = false;
             break;
         }
@@ -116,20 +76,6 @@ void AppStateGame::OnKeyUp(SDLKey sym, SDLMod mod, Uint16 unicode)
 				(Players + CurrentPlayer - 1)->MoveRight = false;
 				(Players + CurrentPlayer - 1)->MoveLeft = false;
 			}
-			/*if (isFirstPlayer)
-			{
-				isFirstPlayer = false;
-				Camera::CameraControl.SetTarget(&Player2.X, &Player2.Y);
-				Player1.MoveRight = false;
-				Player1.MoveLeft = false;
-			}
-			else
-			{
-				isFirstPlayer = true;
-				Camera::CameraControl.SetTarget(&Player1.X, &Player1.Y);
-				Player2.MoveRight = false;
-				Player2.MoveLeft = false;
-			}*/
 			break;
 		}
 		case SDLK_f:
@@ -156,7 +102,10 @@ void AppStateGame::OnKeyUp(SDLKey sym, SDLMod mod, Uint16 unicode)
 		}
 		case SDLK_e:
 		{
-			(Players + CurrentPlayer)->Carry((Players + CurrentPlayer - 1));
+			while(true)
+			{
+				(Players + CurrentPlayer)->Carry((Players + CurrentPlayer - 1));
+			}
 			break;
 		}
 		case SDLK_n:
@@ -184,29 +133,22 @@ void AppStateGame::OnActivate()
 	{
         return;
     }
+	// Create and initialize our Player array
 	CurrentPlayer = 0;
 	PlayerAmount = 3;
 	Players = new Player[PlayerAmount];
 	for (int i = 0; i < PlayerAmount; i++)
 	{
-		if((Players + i)->OnLoad("gfx/yoshi.png", 64, 64, 8) == false)
+		if((Players + i)->OnLoad("gfx/stickman.png", 64, 64, 6) == false)
 		{
 			return;
 		}
 	}
- 
-    /*if(Player2.OnLoad("gfx/yoshi.png", 64, 64, 8) == false)
-	{
-        return;
-    }*/
 	if(Box.OnLoad("gfx/Crate.png", 32, 32, 0) == false)
 	{
 		return;
 	}
-    /*Player2.X = 100;
-	Player2.Y = 50;
-	Player1.Y = 50;*/
-	
+	Box.Flags = ENTITY_FLAG_GHOST & ENTITY_FLAG_GRAVITY;
 	(Players + 1)->X = 100;
 	(Players + 1)->Y = 50;
 	(Players + 2)->X = 300;
@@ -214,24 +156,23 @@ void AppStateGame::OnActivate()
 	Players->Y = 50;
 	Box.X = 200;
 	Box.Y = 50;
-	isFirstPlayer = true;
 	follow = true;
 	for (int i = 0; i < PlayerAmount; i++)
 	{
 		Entity::EntityList.push_back((Players + i));
 	}
-    //Entity::EntityList.push_back(&Player1);
-    //Entity::EntityList.push_back(&Player2);
 	Entity::EntityList.push_back(&Box);
  
     Camera::CameraControl.TargetMode = TARGET_MODE_CENTER;
     Camera::CameraControl.SetTarget(&(Players + CurrentPlayer)->X, &(Players + CurrentPlayer)->Y);
 }
  
-void AppStateGame::OnDeactivate() {
+void AppStateGame::OnDeactivate()
+{
     Area::AreaControl.OnCleanup();
  
-    for(int i = 0;i < Entity::EntityList.size();i++) {
+    for(int i = 0;i < Entity::EntityList.size();i++)
+	{
         if(!Entity::EntityList[i]) continue;
  
         Entity::EntityList[i]->OnCleanup();
@@ -240,15 +181,18 @@ void AppStateGame::OnDeactivate() {
     Entity::EntityList.clear();
 }
  
-void AppStateGame::OnLoop() {
-    for(int i = 0;i < Entity::EntityList.size();i++) {
+void AppStateGame::OnLoop()
+{
+    for(int i = 0;i < Entity::EntityList.size();i++)
+	{
         if(!Entity::EntityList[i]) continue;
  
         Entity::EntityList[i]->OnLoop();
     }
  
     //Collision Events
-    for(int i = 0;i < EntityCol::EntityColList.size();i++) {
+    for(int i = 0;i < EntityCol::EntityColList.size();i++)
+	{
         Entity* EntityA = EntityCol::EntityColList[i].EntityA;
         Entity* EntityB = EntityCol::EntityColList[i].EntityB;
  
@@ -265,24 +209,27 @@ void AppStateGame::OnLoop() {
     EntityCol::EntityColList.clear();
 }
  
-void AppStateGame::OnRender(SDL_Surface* Surf_Display) {
+void AppStateGame::OnRender(SDL_Surface* Surf_Display)
+{
     SDL_Rect Rect;
     Rect.x = 0;
     Rect.y = 0;
     Rect.w = WWIDTH;
     Rect.h = WHEIGHT;
  
-    SDL_FillRect(Surf_Display, &Rect, 0);
+    SDL_FillRect(Surf_Display, &Rect, 0xffffff);
  
     Area::AreaControl.OnRender(Surf_Display, -Camera::CameraControl.GetX(), -Camera::CameraControl.GetY());
  
-    for(int i = 0;i < Entity::EntityList.size();i++) {
+    for(int i = 0;i < Entity::EntityList.size();i++)
+	{
         if(!Entity::EntityList[i]) continue;
  
         Entity::EntityList[i]->OnRender(Surf_Display);
     }
 }
  
-AppStateGame* AppStateGame::GetInstance() {
+AppStateGame* AppStateGame::GetInstance()
+{
     return &Instance;
 }

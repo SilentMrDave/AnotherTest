@@ -34,7 +34,7 @@ void Player::OnAnimate()
 {
     if(SpeedX != 0)
 	{
-        Anim_Control.MaxFrames = 8;
+        Anim_Control.MaxFrames = 6;
     }
 	else
 	{

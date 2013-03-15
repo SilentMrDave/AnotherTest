@@ -53,6 +53,8 @@ class Entity
  
         bool        Dead;
         int			Flags;
+		int			tempFlags;
+		bool		emptyHands;
  
     protected:
         float       SpeedX;
@@ -82,8 +84,6 @@ class Entity
  
     public:
         virtual bool OnLoad(char* File, int Width, int Height, int MaxFrames);
- 
-		virtual bool OnLoad(char* File, int Width, int Height);
 
         virtual void OnLoop();
  
@@ -97,9 +97,9 @@ class Entity
  
     public:
         void    OnMove(float MoveX, float MoveY);
- 
+		// Move Entity MoveX/MoveY amount of pixels per frame
         void    StopMove();
-
+		// Decreases acceleration of an Entity until it stops
 		bool    Jump();
 		
 		bool	Carry(Entity* Entity);
