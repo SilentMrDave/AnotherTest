@@ -137,8 +137,8 @@ void AppStateGame::OnKeyUp(SDLKey sym, SDLMod mod, Uint16 unicode)
 			follow = !follow;
 			if (!follow)
 			{
-				Player2.MoveRight = false;
-				Player2.MoveLeft = false;
+				(Players + CurrentPlayer - 1)->MoveRight = false;
+				(Players + CurrentPlayer - 1)->MoveLeft = false;
 			}
 			break;
 		}
@@ -220,8 +220,8 @@ void AppStateGame::OnActivate()
 	{
 		Entity::EntityList.push_back((Players + i));
 	}
-    Entity::EntityList.push_back(&Player1);
-    Entity::EntityList.push_back(&Player2);
+    //Entity::EntityList.push_back(&Player1);
+    //Entity::EntityList.push_back(&Player2);
 	Entity::EntityList.push_back(&Box);
  
     Camera::CameraControl.TargetMode = TARGET_MODE_CENTER;
@@ -260,10 +260,7 @@ void AppStateGame::OnLoop() {
     }
 	if(follow)
 	{
-		if(isFirstPlayer)
-		{
-			Player2.Follow(&Player1);
-		}
+		(Players + CurrentPlayer - 1)->Follow((Players + CurrentPlayer));
 	}
     EntityCol::EntityColList.clear();
 }
