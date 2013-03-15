@@ -24,6 +24,7 @@ Entity::Entity()
  
     Dead = false;
     Flags = ENTITY_FLAG_GRAVITY;
+	tempFlags = Flags;
  
     SpeedX = 0;
     SpeedY = 0;
@@ -230,7 +231,7 @@ bool Entity::Carry(Entity* Entity)
 	{
 		Entity->tempFlags = Entity->Flags;
 	}
-	if (abs(Entity->X - this->X) > 40 && !isCarrying)
+	if (abs(Entity->X - this->X) < 40 && !isCarrying)
 	{
 		Entity->Flags = ENTITY_FLAG_MAPONLY;
 		Entity->StopMove();
@@ -262,6 +263,7 @@ bool Entity::Carry(Entity* Entity)
 	{
 		Entity->Flags = Entity->tempFlags;
 		isCarrying = false;
+		emptyHands = true;
 	}
 	return false;
 }

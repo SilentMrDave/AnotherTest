@@ -97,7 +97,7 @@ class Entity
  
     public:
         void    OnMove(float MoveX, float MoveY);
-		// Move Entity MoveX/MoveY amount of pixels per frame
+		// Move Entity by MoveX/MoveY amount of pixels per frame
         void    StopMove();
 		// Decreases acceleration of an Entity until it stops
 		bool    Jump();

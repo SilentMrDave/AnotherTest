@@ -1,0 +1,5 @@
+- Add some original gfx
+- Implement SDL_mixer for sfx/music
+- Implement per pixel collision
+- Fix Entity::Follow
+- Fix Entity::Carry

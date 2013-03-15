@@ -25,6 +25,7 @@ class AppStateGame : public AppState
 		int			CurrentPlayer;
 		//Will become Entity specific variable
 		bool		follow;
+		bool		carry;
 		
  
     private:
@@ -34,7 +35,14 @@ class AppStateGame : public AppState
         void OnKeyDown(SDLKey sym, SDLMod mod, Uint16 unicode);
  
         void OnKeyUp(SDLKey sym, SDLMod mod, Uint16 unicode);
- 
+
+		Player* PreviousPlayer();
+		//Return pointer of the previous Player 
+		Player* NextPlayer();
+		//Return pointer of the next Player
+		void SwitchToPlayer(Player* Player);
+		//Switch control to the Player given
+
     public:
         void OnActivate();
  

@@ -52,30 +52,12 @@ void AppStateGame::OnKeyUp(SDLKey sym, SDLMod mod, Uint16 unicode)
 
 		case SDLK_q:
 		{
-			if (CurrentPlayer < PlayerAmount - 1)
-			{
-				CurrentPlayer++;
-			}
-			else
-			{
-				CurrentPlayer = 0;
-			}
-			Camera::CameraControl.SetTarget(&(Players + CurrentPlayer)->X, &(Players + CurrentPlayer)->Y);
-			if ( CurrentPlayer - 1 < 0)
-			{
-				(Players + PlayerAmount - 1)->MoveRight = false;
-				(Players + PlayerAmount - 1)->MoveLeft = false;
-			}
-			/*if ( CurrentPlayer + 1 > PlayerAmount - 1)
-			{
-				(Players)->MoveRight = false;
-				(Players)->MoveLeft = false;
-			}*/
-			else
-			{
-				(Players + CurrentPlayer - 1)->MoveRight = false;
-				(Players + CurrentPlayer - 1)->MoveLeft = false;
-			}
+			SwitchToPlayer(NextPlayer());
+			break;
+		}
+		case SDLK_a:
+		{
+			SwitchToPlayer(PreviousPlayer());
 			break;
 		}
 		case SDLK_f:
@@ -102,10 +84,7 @@ void AppStateGame::OnKeyUp(SDLKey sym, SDLMod mod, Uint16 unicode)
 		}
 		case SDLK_e:
 		{
-			while(true)
-			{
-				(Players + CurrentPlayer)->Carry((Players + CurrentPlayer - 1));
-			}
+			carry = !carry;
 			break;
 		}
 		case SDLK_n:
@@ -157,6 +136,7 @@ void AppStateGame::OnActivate()
 	Box.X = 200;
 	Box.Y = 50;
 	follow = true;
+	carry = false;
 	for (int i = 0; i < PlayerAmount; i++)
 	{
 		Entity::EntityList.push_back((Players + i));
@@ -206,6 +186,14 @@ void AppStateGame::OnLoop()
 	{
 		(Players + CurrentPlayer - 1)->Follow((Players + CurrentPlayer));
 	}
+	if(carry)
+	{
+		(Players + CurrentPlayer)->Carry((Players + CurrentPlayer - 1));
+	}
+	else
+	{
+		(Players + CurrentPlayer)->emptyHands = true;
+	}
     EntityCol::EntityColList.clear();
 }
  
@@ -229,6 +217,43 @@ void AppStateGame::OnRender(SDL_Surface* Surf_Display)
     }
 }
  
+Player* AppStateGame::PreviousPlayer()
+{
+	(Players + CurrentPlayer)->MoveRight = false;
+	(Players + CurrentPlayer)->MoveLeft = false;
+	if ( CurrentPlayer - 1 < 0)
+	{
+		CurrentPlayer = PlayerAmount - 1;
+		return (Players + PlayerAmount - 1);
+	}
+	else
+	{
+		CurrentPlayer--;
+		return (Players + CurrentPlayer);
+	}
+}
+
+Player* AppStateGame::NextPlayer()
+{
+	(Players + CurrentPlayer)->MoveRight = false;
+	(Players + CurrentPlayer)->MoveLeft = false;
+	if (CurrentPlayer < PlayerAmount - 1)
+	{
+		CurrentPlayer++;
+		return (Players + CurrentPlayer);
+	}
+	else
+	{
+		CurrentPlayer = 0;
+		return (Players);
+	}
+}
+
+void AppStateGame::SwitchToPlayer(Player* Player)
+{
+	Camera::CameraControl.SetTarget(&Player->X, &Player ->Y);
+}
+
 AppStateGame* AppStateGame::GetInstance()
 {
     return &Instance;
