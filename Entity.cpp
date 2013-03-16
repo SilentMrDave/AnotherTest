@@ -231,7 +231,7 @@ bool Entity::Carry(Entity* Entity)
 	{
 		Entity->tempFlags = Entity->Flags;
 	}
-	if (abs(Entity->X - this->X) < 40 && !isCarrying)
+	if (abs(Entity->X - this->X) < 68 && !isCarrying)
 	{
 		Entity->Flags = ENTITY_FLAG_MAPONLY;
 		Entity->StopMove();
